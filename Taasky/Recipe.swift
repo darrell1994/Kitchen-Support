@@ -12,10 +12,10 @@ import UIKit
 class Recipe {
     private var name: String
     private var image: UIImage
-    private var rating: Float
+    private var rating: Int
     private var prepTime: Int // in minutes
     
-    init(name: String, image: UIImage, rating: Float, prepTime: Int) {
+    init(name: String, image: UIImage, rating: Int, prepTime: Int) {
         self.name = name
         self.image = image
         self.rating = rating
@@ -30,7 +30,7 @@ class Recipe {
         return image
     }
     
-    func getRating()->Float {
+    func getRating()->Int {
         return rating
     }
     

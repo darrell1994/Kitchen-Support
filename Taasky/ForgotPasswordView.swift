@@ -25,6 +25,13 @@ class ForgotPasswordView: UIViewController, UITextFieldDelegate {
         return UIStatusBarStyle.LightContent
     }
     
+    override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
+        if segue.identifier == "forgotPasswordToLogin" {
+            let vc = segue.destinationViewController as! LoginViewController
+            vc.email = textbox_email.text
+        }
+    }
+    
     func textFieldShouldReturn(textField: UITextField) -> Bool {
         textField.resignFirstResponder()
         return true

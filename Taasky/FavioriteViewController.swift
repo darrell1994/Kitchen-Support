@@ -11,8 +11,9 @@ import UIKit
 private let reuseIdentifier = "Cell"
 
 class FavoriteViewController: UICollectionViewController {
-    var ingredients: [Ingredient] = [Ingredient]()
-    let prepTime = [15, 20, 10, 10, 30, 15, 45, 10, 5, 10]
+    let recipeController = RecipeController()
+    var recipes = [Recipe]()
+    var recipeIDs = [String]()
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -23,7 +24,18 @@ class FavoriteViewController: UICollectionViewController {
         // Register cell classes
         self.collectionView!.registerClass(UICollectionViewCell.self, forCellWithReuseIdentifier: reuseIdentifier)
         
-        tempInitIngredients()
+        self.prepareForRecipes()
+    }
+    
+    func prepareForRecipes() {
+        recipeIDs = recipeController.getFeaturedRecipes()!
+        if let recipeIDs = recipeController.getFeaturedRecipes() {
+            for recipeID in recipeIDs {
+                if let recipe = recipeController.getRecipe(recipeID) {
+                    recipes.append(recipe)
+                }
+            }
+        }
     }
     
     override func didReceiveMemoryWarning() {
@@ -51,35 +63,32 @@ class FavoriteViewController: UICollectionViewController {
     
     override func collectionView(collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         // #warning Incomplete implementation, return the number of items
-        return ingredients.count
+        return recipes.count
     }
     
     override func collectionView(collectionView: UICollectionView, cellForItemAtIndexPath indexPath: NSIndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCellWithReuseIdentifier("pantryItemCell", forIndexPath: indexPath)
         
         let imageView = UIImageView.init()
-        imageView.image = ingredients[indexPath.row].getImage()
+        dispatch_async(dispatch_get_main_queue()) {
+        imageView.image = self.recipes[indexPath.row].getImage()
+        }
+        imageView.contentMode = UIViewContentMode.ScaleAspectFill
         imageView.frame = CGRect(x: 0, y: 0, width: 150, height: 150)
         
         let backgroundLabel = UILabel.init(frame: CGRect(x: 0, y: 150, width: 150, height: 30))
         backgroundLabel.backgroundColor = UIColor(red: 208, green: 219, blue: 208, alpha: 1.0)
         
         let nameLabel = UILabel.init(frame: CGRect(x: 5, y: 150, width: 140, height: 30))
-        nameLabel.text = ingredients[indexPath.row].getName()
+        nameLabel.text = recipes[indexPath.row].getName()
         nameLabel.textColor = UIColor.blackColor()
-        nameLabel.font = UIFont(name: "Gill Sans", size: 14.0)
+        nameLabel.font = UIFont(name: "Gill Sans", size: 12.0)
         nameLabel.textAlignment = NSTextAlignment.Left
-        
-        let prepTimeLabel = UILabel.init(frame: CGRect(x: 5, y: 150, width: 140, height: 30))
-        prepTimeLabel.text = String(prepTime[indexPath.row]) + " mins"
-        prepTimeLabel.textColor = UIColor.blackColor()
-        prepTimeLabel.font = UIFont(name: "Gill Sans", size: 14.0)
-        prepTimeLabel.textAlignment = NSTextAlignment.Right
+        nameLabel.numberOfLines = 2
         
         cell.addSubview(imageView)
         cell.addSubview(backgroundLabel)
         cell.addSubview(nameLabel)
-        cell.addSubview(prepTimeLabel)
         
         return cell
     }
@@ -97,45 +106,4 @@ class FavoriteViewController: UICollectionViewController {
                 assert(false, "Unexpected element kind")
             }
     }
-    
-    func tempInitIngredients() {
-        let pantryCellImages = ["spaghetti.png", "curry beef.png", "chicken salad.png", "omelet.png", "kung pao chicken.png", "tacos.png", "pad thai.png", "turkey sandwich.png", "ramen noodles.png", "hamburger.png"]
-        for i in 0...9 {
-            let index: String.Index = pantryCellImages[i].characters.indexOf(".")!
-            let itemName = pantryCellImages[i].substringToIndex(index)
-            self.ingredients.append(Ingredient(name: itemName, image: UIImage(named: pantryCellImages[i])!))
-        }
-    }
-    
-    // MARK: UICollectionViewDelegate
-    
-    /*
-    // Uncomment this method to specify if the specified item should be highlighted during tracking
-    override func collectionView(collectionView: UICollectionView, shouldHighlightItemAtIndexPath indexPath: NSIndexPath) -> Bool {
-    return true
-    }
-    */
-    
-    /*
-    // Uncomment this method to specify if the specified item should be selected
-    override func collectionView(collectionView: UICollectionView, shouldSelectItemAtIndexPath indexPath: NSIndexPath) -> Bool {
-    return true
-    }
-    */
-    
-    /*
-    // Uncomment these methods to specify if an action menu should be displayed for the specified item, and react to actions performed on the item
-    override func collectionView(collectionView: UICollectionView, shouldShowMenuForItemAtIndexPath indexPath: NSIndexPath) -> Bool {
-    return false
-    }
-    
-    override func collectionView(collectionView: UICollectionView, canPerformAction action: Selector, forItemAtIndexPath indexPath: NSIndexPath, withSender sender: AnyObject?) -> Bool {
-    return false
-    }
-    
-    override func collectionView(collectionView: UICollectionView, performAction action: Selector, forItemAtIndexPath indexPath: NSIndexPath, withSender sender: AnyObject?) {
-    
-    }
-    */
-    
 }

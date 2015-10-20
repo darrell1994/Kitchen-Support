@@ -135,7 +135,7 @@ class SignupViewController: UIViewController, UITextFieldDelegate {
         activityIndicator.stopAnimating()
         if status == "success" {
             print("signup success")
-            alertView("Success", message: "Welcome to Kitchen Support")
+            alertView("Success", message: "Hi \(textbox_firstName.text!), welcome to Kitchen Support!")
         } else {
             print("signup failure")
             alertView("Failure", message: "Failed to sign up")
